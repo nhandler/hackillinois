@@ -6,15 +6,41 @@ static TextLayer *text_layer2;
 static char buffer[] = "00:00";
 static char buffer2[] = "00:00";
 
+struct tm end_time_struct;
+end_time_struct.tm_year = 2014;
+end_time_struct.tm_mon = 4;
+end_time_struct.tm_mday = 13;
+end_time_struct.tm_sec = 0;
+end_time_struct.tm_min = 0;
+end_time_struct.tm_hour = 12;
+time_t end_time;
+end_time = mktime(&end_time_struct);
+
+struct tm rem_time_struct;
+rem_time_struct.tm_year = 0;
+rem_time_struct.tm_mon = 0;
+rem_time_struct.tm_mday = 0;
+rem_time_struct.tm_sec = 0;
+rem_time_struct.tm_min = 0;
+rem_time_struct.tm_hour = 0;
+time_t rem_time;
+
 static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
   // Format the buffer string using tick_time as the time source
+  rem_time_struct.tm_year = end_time_struct.tm_year - tick_time->tm_year;
+  rem_time_struct.tm_mon = end_time_struct.tm_mon - tick_time->tm_mon;
+  rem_time_struct.tm_mday = end_time_struct.tm_mday - tick_time->tm_mday;
+  rem_time_struct.tm_sec = end_time_struct.tm_sec - tick_time->tm_sec;
+  rem_time_struct.tm_min = end_time_struct.tm_min - tick_time->tm_min;
+  rem_time_struct.tm_hour = end_time_struct.tm_hour - tick_time->tm_hour;
+  rem_time = mktime(&rem_time_struct);
   if (clock_is_24h_style()) {
       strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
-      strftime(buffer2, sizeof("00:00"), "%H:%M", tick_time);
+      strftime(buffer2, sizeof("00:00"), "%H:%M", rem_time);
   }
   else {
       strftime(buffer, sizeof("00:00"), "%I:%M", tick_time);
-      strftime(buffer2, sizeof("00:00"), "%I:%M", tick_time);
+      strftime(buffer2, sizeof("00:00"), "%I:%M", rem_time);
   }
 
   // Change the TextLayer text to show the new time
