@@ -22,7 +22,7 @@ static void window_load(Window *window) {
   t = localtime(&temp);
 
   // Manually call the tick handler when the window is loading
-  tick_handler(t, MINUTE_UNIT);
+  handle_minute_tick(t, MINUTE_UNIT);
 }
 
 static void window_unload(Window *window) {
