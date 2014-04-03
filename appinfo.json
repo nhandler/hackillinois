@@ -2,11 +2,11 @@
   "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
   "shortName": "pebble-hackillinois",
   "longName": "pebble-hackillinois",
-  "companyName": "MakeAwesomeHappen",
+  "companyName": "nathan@hackillinois.org",
   "versionCode": 1,
   "versionLabel": "1.0.0",
   "watchapp": {
-    "watchface": false
+    "watchface": true
   },
   "appKeys": {
     "dummy": 0
