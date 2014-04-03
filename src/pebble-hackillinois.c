@@ -8,8 +8,14 @@ static char buffer2[] = "00:00";
 
 static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
   // Format the buffer string using tick_time as the time source
-  strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
-  strftime(buffer2, sizeof("00:00"), "%H:%M", tick_time);
+  if (clock_is_24h_style()) {
+      strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
+      strftime(buffer2, sizeof("00:00"), "%H:%M", tick_time);
+  }
+  else {
+      strftime(buffer, sizeof("00:00"), "%I:%M", tick_time);
+      strftime(buffer2, sizeof("00:00"), "%I:%M", tick_time);
+  }
 
   // Change the TextLayer text to show the new time
   text_layer_set_text(text_layer, buffer);
