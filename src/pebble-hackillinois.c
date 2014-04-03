@@ -4,6 +4,14 @@ static Window *window;
 static TextLayer *text_layer;
 static char buffer[] = "00:00";
 
+static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
+  // Format the buffer string using tick_time as the time source
+  strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
+
+  // Change the TextLayer text to show the new time
+  text_layer_set_text(text_layer, buffer);
+}
+
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
@@ -29,17 +37,8 @@ static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
 }
 
-static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
-  // Format the buffer string using tick_time as the time source
-  strftime(buffer, sizeof("00:00"), "%H:%M", tick_time);
-
-  // Change the TextLayer text to show the new time
-  text_layer_set_text(text_layer, buffer);
-}
-
 static void init(void) {
   window = window_create();
-  window_set_click_config_provider(window, click_config_provider);
   window_set_window_handlers(window, (WindowHandlers) {
     .load = window_load,
     .unload = window_unload,
