@@ -31,7 +31,7 @@ static void window_load(Window *window) {
   text_layer_set_text_alignment(text_layer2, GTextAlignmentCenter);
   text_layer_set_background_color(text_layer2, GColorBlack);
   text_layer_set_text_color(text_layer2, GColorWhite);
-  text_layer_set_font(text_layer2, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+  text_layer_set_font(text_layer2, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
   layer_add_child(window_layer, text_layer_get_layer(text_layer2));
 
   // Get a time structure so that the face doesn't start blank
