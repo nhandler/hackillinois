@@ -1,0 +1,17 @@
+{
+  "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
+  "shortName": "pebble-hackillinois",
+  "longName": "pebble-hackillinois",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 1,
+  "versionLabel": "1.0.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
