@@ -9,9 +9,14 @@
     "watchface": true
   },
   "appKeys": {
-    "dummy": 0
   },
   "resources": {
-    "media": []
+    "media": [
+      {
+        "type": "png",
+        "name": "IMAGE_LOGO",
+        "file": "images/logo.png"
+      }
+    ]
   }
 }
