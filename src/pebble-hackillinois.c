@@ -39,10 +39,18 @@ char *itoa(int num)
 
 static void updateRemTime() {
   time_t secs_epoch_time = time(NULL);
-  int secs_epoch = secs_epoch_time;
-  int end_epoch = 1397408400;
+  int secs_epoch = secs_epoch_time + 18000; // Add 5 hours to deal with lack of timezones
+  int end_epoch;
   int rem;
 
+  if (secs_epoch < 1397257200) {  // If we are before April 11, 2014 @ 18:00:00
+    end_epoch = 1397257200;
+  }
+  else {
+    end_epoch = 1397401200; // If HackIllinois has started, end at April 13, 2014 @ 10:00:00
+  }
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Secs: %d", secs_epoch);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "End: %d", end_epoch);
   if (secs_epoch >= end_epoch) {
     rem = 0;
   }
