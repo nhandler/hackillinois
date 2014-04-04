@@ -16,6 +16,11 @@
         "type": "png",
         "name": "IMAGE_LOGO",
         "file": "images/logo.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_ROCKET",
+        "file": "images/rocket.png"
       }
     ]
   }

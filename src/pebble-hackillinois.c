@@ -1,12 +1,47 @@
 #include <pebble.h>
 
 static Window *window;
+static Window *rocket_window;
 static TextLayer *time_layer;
 static TextLayer *rem_layer;
-static BitmapLayer *image_layer;
-static GBitmap *image;
+static BitmapLayer *logo_layer;
+static GBitmap *logo;
+static BitmapLayer *rocket_layer;
+static GBitmap *rocket;
 static char timeBuff[] = "00:00";
 static char *remBuff;
+static PropertyAnimation *prop_animation;
+static int toggle = 0;
+static const uint32_t const segments[] = { 400, 100, 400, 100, 400 };
+static VibePattern pat = {
+  .durations = segments,
+  .num_segments = ARRAY_LENGTH(segments),
+};
+
+static void animation_started(Animation *animation, void *data) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation Started");
+  //vibes_long_pulse();
+  vibes_enqueue_custom_pattern(pat);
+}
+
+static void animation_stopped(Animation *animation, bool finished, void *data) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation Stopped");
+  vibes_cancel();
+  window_stack_remove(rocket_window, true);
+}
+
+static void destroy_property_animation(PropertyAnimation **prop_animation) {
+  if (*prop_animation == NULL) {
+    return;
+  }
+
+  if (animation_is_scheduled((Animation*) *prop_animation)) {
+    animation_unschedule((Animation*) *prop_animation);
+  }
+
+  property_animation_destroy(*prop_animation);
+  *prop_animation = NULL;
+}
 
 char *itoa(int num)
 {
@@ -35,6 +70,12 @@ char *itoa(int num)
     return "Unsupported Number";
   
   return string;
+}
+
+static void takeoff() {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "pushing");
+  window_stack_push(rocket_window, true);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "done pushing");
 }
 
 static void updateRemTime() {
@@ -119,6 +160,40 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
   updateRemTime();
 }
 
+void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+  takeoff();
+}
+
+static void rocket_window_load(Window *rocket_window) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "rocket_window_load called");
+  tick_timer_service_unsubscribe();
+  accel_tap_service_unsubscribe();
+
+  Layer *rocket_window_layer = window_get_root_layer(rocket_window);
+  GRect bounds = layer_get_bounds(rocket_window_layer);
+
+  rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ROCKET);
+
+  rocket_layer = bitmap_layer_create((GRect) { .origin = { 0 , 168+62 }, .size = { bounds.size.w, 62 } });
+  bitmap_layer_set_bitmap(rocket_layer, rocket);
+  bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
+  bitmap_layer_set_background_color(rocket_layer, GColorBlack);
+  layer_add_child(rocket_window_layer, bitmap_layer_get_layer(rocket_layer));
+
+  GRect to_rect = GRect(0,0-62,bounds.size.w, 62);
+  destroy_property_animation(&prop_animation);
+  prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(rocket_layer), NULL, &to_rect);
+  animation_set_duration((Animation*) prop_animation, 2000);
+  animation_set_curve((Animation*) prop_animation, AnimationCurveEaseIn);
+  animation_set_handlers((Animation*) prop_animation, (AnimationHandlers) {
+    .started = (AnimationStartedHandler) animation_started,
+    .stopped = (AnimationStoppedHandler) animation_stopped,
+  }, NULL /* callback data */);
+  animation_schedule((Animation*) prop_animation);
+
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "rocket_window_load done");
+}
+
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
@@ -138,15 +213,14 @@ static void window_load(Window *window) {
   text_layer_set_font(rem_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   layer_add_child(window_layer, text_layer_get_layer(rem_layer));
 
-  image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
+  logo = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
 
   // The bitmap layer holds the image for display
-  image_layer = bitmap_layer_create((GRect) { .origin = { 0 , 90 }, .size = { bounds.size.w, 70 } });
-  bitmap_layer_set_bitmap(image_layer, image);
-  bitmap_layer_set_alignment(image_layer, GAlignCenter);
-  bitmap_layer_set_background_color(image_layer, GColorBlack);
-  layer_add_child(window_layer, bitmap_layer_get_layer(image_layer));
-
+  logo_layer = bitmap_layer_create((GRect) { .origin = { 0 , 90 }, .size = { bounds.size.w, 70 } });
+  bitmap_layer_set_bitmap(logo_layer, logo);
+  bitmap_layer_set_alignment(logo_layer, GAlignCenter);
+  bitmap_layer_set_background_color(logo_layer, GColorBlack);
+  layer_add_child(window_layer, bitmap_layer_get_layer(logo_layer));
 
   // Get a time structure so that the face doesn't start blank
   struct tm *t;
@@ -158,9 +232,19 @@ static void window_load(Window *window) {
   handle_minute_tick(t, MINUTE_UNIT);
 }
 
+static void rocket_window_unload(Window *rocket_window) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "rocket_window_unload called");
+  gbitmap_destroy(rocket);
+  bitmap_layer_destroy(rocket_layer);
+  destroy_property_animation(&prop_animation);
+  tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
+  accel_tap_service_subscribe(&accel_tap_handler);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "rocket_window_unload done");
+}
+
 static void window_unload(Window *window) {
-  gbitmap_destroy(image);
-  bitmap_layer_destroy(image_layer);
+  gbitmap_destroy(logo);
+  bitmap_layer_destroy(logo_layer);
   text_layer_destroy(time_layer);
   free(remBuff);
   text_layer_destroy(rem_layer);
@@ -176,11 +260,21 @@ static void init(void) {
   window_set_background_color(window, GColorBlack);
   window_stack_push(window, animated);
 
+  rocket_window = window_create();
+  window_set_window_handlers(rocket_window, (WindowHandlers) {
+    .load = rocket_window_load,
+    .unload = rocket_window_unload,
+  });
+  window_set_background_color(rocket_window, GColorBlack);
+
   tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
+  accel_tap_service_subscribe(&accel_tap_handler);
 }
 
 static void deinit(void) {
   tick_timer_service_unsubscribe();
+  accel_tap_service_unsubscribe();
+  window_destroy(rocket_window);
   window_destroy(window);
 }
 
