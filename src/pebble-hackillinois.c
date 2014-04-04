@@ -21,7 +21,7 @@ static VibePattern pat = {
 static void animation_started(Animation *animation, void *data) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation Started");
   //vibes_long_pulse();
-  vibes_enqueue_custom_pattern(pat);
+  //vibes_enqueue_custom_pattern(pat);
 }
 
 static void animation_stopped(Animation *animation, bool finished, void *data) {
