@@ -184,7 +184,7 @@ static void rocket_window_load(Window *rocket_window) {
 
   rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ROCKET);
 
-  rocket_layer = bitmap_layer_create((GRect) { .origin = { 0 , 168+62 }, .size = { bounds.size.w, 62 } });
+  rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(31/2) , 168+62 }, .size = { 31, 62 } });
   bitmap_layer_set_bitmap(rocket_layer, rocket);
   bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
   bitmap_layer_set_background_color(rocket_layer, GColorBlack);
@@ -201,7 +201,7 @@ static void rocket_window_load(Window *rocket_window) {
   }, NULL /* callback data */);
   animation_schedule((Animation*) star_prop_animation);
 
-  GRect to_rect = GRect(0,0-62,bounds.size.w, 62);
+  GRect to_rect = GRect((bounds.size.w/2)-(31/2),0-62,31, 62);
   destroy_property_animation(&prop_animation);
   prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(rocket_layer), NULL, &to_rect);
   animation_set_duration((Animation*) prop_animation, 2000);
