@@ -1,32 +1,39 @@
 {
-  "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
-  "shortName": "hackillinois",
-  "longName": "HackIllinois",
-  "companyName": "nathan@hackillinois.org",
-  "versionCode": 4,
-  "versionLabel": "1.1.1",
-  "watchapp": {
-    "watchface": true
-  },
-  "appKeys": {
-  },
-  "resources": {
-    "media": [
-      {
-        "type": "png",
-        "name": "IMAGE_LOGO",
-        "file": "images/logo.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_ROCKET",
-        "file": "images/rocket.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_STARS",
-        "file": "images/stars.png"
-      }
-    ]
-  }
+    "versionLabel": "1.1.1",
+    "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
+    "appKeys": {},
+    "longName": "HackIllinois",
+    "versionCode": 4,
+    "capabilities": [
+        ""
+    ],
+    "shortName": "hackillinois",
+    "companyName": "nathan@hackillinois.org",
+    "watchapp": {
+        "watchface": true
+    },
+    "resources": {
+        "media": [
+            {
+                "type": "png",
+                "name": "IMAGE_UFO",
+                "file": "images/ufo.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_STARS",
+                "file": "images/stars.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_ROCKET",
+                "file": "images/rocket.png"
+            },
+            {
+                "type": "png",
+                "name": "IMAGE_LOGO",
+                "file": "images/logo.png"
+            }
+        ]
+    }
 }

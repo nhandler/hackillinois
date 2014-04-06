@@ -182,14 +182,6 @@ static void rocket_window_load(Window *rocket_window) {
   bitmap_layer_set_background_color(star_layer, GColorBlack);
   layer_add_child(rocket_window_layer, bitmap_layer_get_layer(star_layer));
 
-  rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ROCKET);
-
-  rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(31/2) , 168+62 }, .size = { 31, 62 } });
-  bitmap_layer_set_bitmap(rocket_layer, rocket);
-  bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
-  bitmap_layer_set_background_color(rocket_layer, GColorBlack);
-  layer_add_child(rocket_window_layer, bitmap_layer_get_layer(rocket_layer));
-
   GRect stars_to_rect = GRect(0,0,bounds.size.w, bounds.size.h*2);
   destroy_property_animation(&star_prop_animation);
   star_prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(star_layer), NULL, &stars_to_rect);
@@ -200,17 +192,49 @@ static void rocket_window_load(Window *rocket_window) {
     .stopped = NULL
   }, NULL /* callback data */);
   animation_schedule((Animation*) star_prop_animation);
+  
+  srand(time(NULL));
+  if (rand()%10 < 9) { // Display Rocket
+    rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ROCKET);
 
-  GRect to_rect = GRect((bounds.size.w/2)-(31/2),0-62,31, 62);
-  destroy_property_animation(&prop_animation);
-  prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(rocket_layer), NULL, &to_rect);
-  animation_set_duration((Animation*) prop_animation, 2000);
-  animation_set_curve((Animation*) prop_animation, AnimationCurveEaseIn);
-  animation_set_handlers((Animation*) prop_animation, (AnimationHandlers) {
-    .started = (AnimationStartedHandler) animation_started,
-    .stopped = (AnimationStoppedHandler) animation_stopped,
-  }, NULL /* callback data */);
-  animation_schedule((Animation*) prop_animation);
+    rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(31/2) , 168+62 }, .size = { 31, 62 } });
+    bitmap_layer_set_bitmap(rocket_layer, rocket);
+    bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
+    bitmap_layer_set_background_color(rocket_layer, GColorBlack);
+    layer_add_child(rocket_window_layer, bitmap_layer_get_layer(rocket_layer));
+
+    GRect to_rect = GRect((bounds.size.w/2)-(31/2),0-62,31, 62);
+    destroy_property_animation(&prop_animation);
+    prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(rocket_layer), NULL, &to_rect);
+    animation_set_duration((Animation*) prop_animation, 2000);
+    animation_set_curve((Animation*) prop_animation, AnimationCurveEaseIn);
+    animation_set_handlers((Animation*) prop_animation, (AnimationHandlers) {
+      .started = (AnimationStartedHandler) animation_started,
+      .stopped = (AnimationStoppedHandler) animation_stopped,
+    }, NULL /* callback data */);
+    animation_schedule((Animation*) prop_animation);
+  }
+  else { // Display UFO
+    rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UFO);
+    
+    rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(100/2) , 168+100 }, .size = { 100, 100 } });
+    bitmap_layer_set_bitmap(rocket_layer, rocket);
+    bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
+    bitmap_layer_set_background_color(rocket_layer, GColorBlack);
+    layer_add_child(rocket_window_layer, bitmap_layer_get_layer(rocket_layer));
+    
+    GRect to_rect = GRect((bounds.size.w/2)-(100/2),0-100,100, 100);
+    destroy_property_animation(&prop_animation);
+    prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(rocket_layer), NULL, &to_rect);
+    animation_set_duration((Animation*) prop_animation, 2000);
+    animation_set_curve((Animation*) prop_animation, AnimationCurveEaseIn);
+    animation_set_handlers((Animation*) prop_animation, (AnimationHandlers) {
+      .started = (AnimationStartedHandler) animation_started,
+      .stopped = (AnimationStoppedHandler) animation_stopped,
+    }, NULL /* callback data */);
+    animation_schedule((Animation*) prop_animation);
+    vibes_enqueue_custom_pattern(pat);
+  }
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "rocket_window_load done");
 }
