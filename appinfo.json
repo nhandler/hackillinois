@@ -3,8 +3,8 @@
   "shortName": "hackillinois",
   "longName": "HackIllinois",
   "companyName": "nathan@hackillinois.org",
-  "versionCode": 2,
-  "versionLabel": "1.0.1",
+  "versionCode": 3,
+  "versionLabel": "1.1.0",
   "watchapp": {
     "watchface": true
   },
@@ -21,6 +21,11 @@
         "type": "png",
         "name": "IMAGE_ROCKET",
         "file": "images/rocket.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_STARS",
+        "file": "images/stars.png"
       }
     ]
   }

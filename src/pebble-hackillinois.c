@@ -11,12 +11,14 @@ static GBitmap *rocket;
 static char timeBuff[] = "00:00";
 static char *remBuff;
 static PropertyAnimation *prop_animation;
-static int toggle = 0;
 static const uint32_t const segments[] = { 400, 100, 400, 100, 400 };
 static VibePattern pat = {
   .durations = segments,
   .num_segments = ARRAY_LENGTH(segments),
 };
+static BitmapLayer *star_layer;
+static GBitmap *stars;
+static PropertyAnimation *star_prop_animation;
 
 static void animation_started(Animation *animation, void *data) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation Started");
@@ -172,6 +174,14 @@ static void rocket_window_load(Window *rocket_window) {
   Layer *rocket_window_layer = window_get_root_layer(rocket_window);
   GRect bounds = layer_get_bounds(rocket_window_layer);
 
+  stars = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_STARS);
+
+  star_layer = bitmap_layer_create((GRect) { .origin = { 0 , -168 }, .size = { bounds.size.w, bounds.size.h*2 } });
+  bitmap_layer_set_bitmap(star_layer, stars);
+  bitmap_layer_set_alignment(star_layer, GAlignCenter);
+  bitmap_layer_set_background_color(star_layer, GColorBlack);
+  layer_add_child(rocket_window_layer, bitmap_layer_get_layer(star_layer));
+
   rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ROCKET);
 
   rocket_layer = bitmap_layer_create((GRect) { .origin = { 0 , 168+62 }, .size = { bounds.size.w, 62 } });
@@ -179,6 +189,17 @@ static void rocket_window_load(Window *rocket_window) {
   bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
   bitmap_layer_set_background_color(rocket_layer, GColorBlack);
   layer_add_child(rocket_window_layer, bitmap_layer_get_layer(rocket_layer));
+
+  GRect stars_to_rect = GRect(0,0,bounds.size.w, bounds.size.h*2);
+  destroy_property_animation(&star_prop_animation);
+  star_prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(star_layer), NULL, &stars_to_rect);
+  animation_set_duration((Animation*) star_prop_animation, 2000);
+  animation_set_curve((Animation*) star_prop_animation, AnimationCurveLinear);
+  animation_set_handlers((Animation*) star_prop_animation, (AnimationHandlers) {
+    .started = NULL,
+    .stopped = NULL
+  }, NULL /* callback data */);
+  animation_schedule((Animation*) star_prop_animation);
 
   GRect to_rect = GRect(0,0-62,bounds.size.w, 62);
   destroy_property_animation(&prop_animation);
@@ -234,6 +255,8 @@ static void window_load(Window *window) {
 
 static void rocket_window_unload(Window *rocket_window) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "rocket_window_unload called");
+  gbitmap_destroy(stars);
+  bitmap_layer_destroy(star_layer);
   gbitmap_destroy(rocket);
   bitmap_layer_destroy(rocket_layer);
   destroy_property_animation(&prop_animation);
