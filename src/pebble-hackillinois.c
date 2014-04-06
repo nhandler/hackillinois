@@ -217,13 +217,13 @@ static void rocket_window_load(Window *rocket_window) {
   else { // Display UFO
     rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UFO);
     
-    rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(100/2) , 168+100 }, .size = { 100, 100 } });
+    rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(60/2) , 168+44 }, .size = { 60, 44 } });
     bitmap_layer_set_bitmap(rocket_layer, rocket);
     bitmap_layer_set_alignment(rocket_layer, GAlignCenter);
     bitmap_layer_set_background_color(rocket_layer, GColorBlack);
     layer_add_child(rocket_window_layer, bitmap_layer_get_layer(rocket_layer));
     
-    GRect to_rect = GRect((bounds.size.w/2)-(100/2),0-100,100, 100);
+    GRect to_rect = GRect((bounds.size.w/2)-(60/2),0-44,60, 44);
     destroy_property_animation(&prop_animation);
     prop_animation = property_animation_create_layer_frame(bitmap_layer_get_layer(rocket_layer), NULL, &to_rect);
     animation_set_duration((Animation*) prop_animation, 2000);
