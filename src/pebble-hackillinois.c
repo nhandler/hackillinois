@@ -194,7 +194,7 @@ static void rocket_window_load(Window *rocket_window) {
   animation_schedule((Animation*) star_prop_animation);
   
   srand(time(NULL));
-  if (rand()%10 < 9) { // Display Rocket
+  if (rand()%100 < 99) { // Display Rocket
     rocket = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ROCKET);
 
     rocket_layer = bitmap_layer_create((GRect) { .origin = { (bounds.size.w/2)-(31/2) , 168+62 }, .size = { 31, 62 } });
