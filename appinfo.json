@@ -1,9 +1,9 @@
 {
-    "versionLabel": "1.2.0",
+    "versionLabel": "1.2.1",
     "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
     "appKeys": {},
     "longName": "HackIllinois",
-    "versionCode": 5,
+    "versionCode": 6,
     "capabilities": [
         ""
     ],
