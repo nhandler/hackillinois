@@ -86,11 +86,11 @@ static void updateRemTime() {
   int end_epoch;
   int rem;
 
-  if (secs_epoch < 1397257200) {  // If we are before April 11, 2014 @ 18:00:00
-    end_epoch = 1397257200;
+  if (secs_epoch < 1424476800) {  // If we are before February 20, 2015 @ 18:00:00
+    end_epoch = 1424476800 ;
   }
   else {
-    end_epoch = 1397401200; // If HackIllinois has started, end at April 13, 2014 @ 10:00:00
+    end_epoch = 1424620800 ; // If HackIllinois has started, end at February 22, 2015 @ 10:00:00
   }
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Secs: %d", secs_epoch);
   APP_LOG(APP_LOG_LEVEL_DEBUG, "End: %d", end_epoch);

@@ -1,39 +1,39 @@
 {
-    "versionLabel": "1.2.1",
-    "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
     "appKeys": {},
-    "longName": "HackIllinois",
-    "versionCode": 6,
     "capabilities": [
         ""
     ],
-    "shortName": "hackillinois",
     "companyName": "nathan@hackillinois.org",
-    "watchapp": {
-        "watchface": true
-    },
+    "longName": "HackIllinois",
     "resources": {
         "media": [
             {
-                "type": "png",
-                "name": "IMAGE_UFO",
-                "file": "images/ufo.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_STARS",
-                "file": "images/stars.png"
-            },
-            {
-                "type": "png",
-                "name": "IMAGE_ROCKET",
-                "file": "images/rocket.png"
-            },
-            {
-                "type": "png",
+                "file": "images/logo.png",
                 "name": "IMAGE_LOGO",
-                "file": "images/logo.png"
+                "type": "png"
+            },
+            {
+                "file": "images/rocket.png",
+                "name": "IMAGE_ROCKET",
+                "type": "png"
+            },
+            {
+                "file": "images/stars.png",
+                "name": "IMAGE_STARS",
+                "type": "png"
+            },
+            {
+                "file": "images/ufo.png",
+                "name": "IMAGE_UFO",
+                "type": "png"
             }
         ]
+    },
+    "shortName": "hackillinois",
+    "uuid": "e71c2e55-4256-4dee-bdbb-aa9dda207468",
+    "versionCode": 6,
+    "versionLabel": "1.2.1",
+    "watchapp": {
+        "watchface": true
     }
 }
