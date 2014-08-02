@@ -5,6 +5,7 @@
     ],
     "companyName": "nathan@hackillinois.org",
     "longName": "HackIllinois",
+    "projectType": "native",
     "resources": {
         "media": [
             {

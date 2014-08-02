@@ -4,11 +4,13 @@ static Window *window;
 static Window *rocket_window;
 static TextLayer *time_layer;
 static TextLayer *rem_layer;
+static TextLayer *date_layer;
 static BitmapLayer *logo_layer;
 static GBitmap *logo;
 static BitmapLayer *rocket_layer;
 static GBitmap *rocket;
 static char timeBuff[] = "00:00";
+static char dateBuff[] = "2/27";
 static char *remBuff;
 static PropertyAnimation *prop_animation;
 static const uint32_t const segments[] = { 400, 100, 400, 100, 400 };
@@ -19,6 +21,8 @@ static VibePattern pat = {
 static BitmapLayer *star_layer;
 static GBitmap *stars;
 static PropertyAnimation *star_prop_animation;
+static int start_epoch = 1425081600;
+static int end_event_epoch = 1425225600;
 
 static void animation_started(Animation *animation, void *data) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation Started");
@@ -86,11 +90,11 @@ static void updateRemTime() {
   int end_epoch;
   int rem;
 
-  if (secs_epoch < 1424476800) {  // If we are before February 20, 2015 @ 18:00:00
-    end_epoch = 1424476800 ;
+  if (secs_epoch < start_epoch) {
+    end_epoch = start_epoch;
   }
   else {
-    end_epoch = 1424620800 ; // If HackIllinois has started, end at February 22, 2015 @ 10:00:00
+    end_epoch = end_event_epoch;
   }
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Secs: %d", secs_epoch);
   APP_LOG(APP_LOG_LEVEL_DEBUG, "End: %d", end_epoch);
@@ -154,10 +158,15 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
   else {
     strftime(timeBuff, sizeof("00:00"), "%l:%M", tick_time);
   }
+  strftime(dateBuff, sizeof("02/27"), "%m/%d", tick_time);
 
   // Change the TextLayer text to show the new time
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting timeBuff: %s", timeBuff);
   text_layer_set_text(time_layer, timeBuff);
+  
+  // Update the date
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Setting dateBuff: %s", dateBuff);
+  text_layer_set_text(date_layer, dateBuff);
 
   updateRemTime();
 }
@@ -272,6 +281,13 @@ static void window_load(Window *window) {
   time_t temp;
   temp = time(NULL);
   t = localtime(&temp);
+  
+  date_layer = text_layer_create((GRect) { .origin = { 104, 148 }, .size = { 40, 20 } });
+  text_layer_set_text_alignment(date_layer, GTextAlignmentLeft);
+  text_layer_set_background_color(date_layer, GColorBlack);
+  text_layer_set_text_color(date_layer, GColorWhite);
+  text_layer_set_font(date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+  layer_add_child(window_layer, text_layer_get_layer(date_layer));
 
   // Manually call the tick handler when the window is loading
   handle_minute_tick(t, MINUTE_UNIT);
@@ -295,6 +311,7 @@ static void window_unload(Window *window) {
   text_layer_destroy(time_layer);
   free(remBuff);
   text_layer_destroy(rem_layer);
+  text_layer_destroy(date_layer);
 }
 
 static void init(void) {
